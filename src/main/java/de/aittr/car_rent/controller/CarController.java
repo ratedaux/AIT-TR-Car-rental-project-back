@@ -150,7 +150,7 @@ public class CarController {
     @GetMapping("/filter")
     @Operation(
             summary = "Filter available cars",
-            description = "Filter available cars by various criteria including dates, brand, fuel type, transmission type and price range"
+            description = "Filter available cars by various criteria including dates, brand, fuel type, car type, transmission type and price range"
     )
     public List<CarResponseDto> filterAvailableCars(
             @RequestParam(required = false)
@@ -163,15 +163,19 @@ public class CarController {
 
             @RequestParam(required = false)
             @Parameter(description = "Car brand")
-            String brand,
+            List <String> brand,
 
             @RequestParam(required = false)
             @Parameter(description = "Car fuel type")
-            String fuelType,
+            List <String> fuel,
 
             @RequestParam(required = false)
             @Parameter(description = "Car transmission type")
-            String transmissionType,
+            List <String> transmissionType,
+
+            @RequestParam(required = false)
+            @Parameter(description = "Car body type")
+            List <String> type,
 
             @RequestParam(required = false)
             @Parameter(description = "Minimum rental price per day")
@@ -180,7 +184,7 @@ public class CarController {
             @RequestParam(required = false)
             @Parameter(description = "Maximum rental price per day")
             BigDecimal maxPrice) {
-        return carService.filterAvailableCars(startDateTime, endDateTime, brand, fuelType, transmissionType, minPrice, maxPrice);
+        return carService.filterAvailableCars(startDateTime, endDateTime, brand, fuel, transmissionType, type, minPrice, maxPrice);
     }
 
 //   GET -> localhost:8080/api/cars/brands
@@ -191,5 +195,14 @@ public class CarController {
     )
     public List<String> getAllAvailableBrands() {
         return carService.getAllAvailableBrands();
+    }
+
+    @GetMapping("/types")
+    @Operation(
+            summary = "Get all car types",
+            description = "Retrieve a list of all car body types"
+    )
+    public List<String> getAllCarTypes() {
+        return carService.getAllCarTypes();
     }
 }

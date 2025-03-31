@@ -3,6 +3,7 @@ package de.aittr.car_rent.service;
 import de.aittr.car_rent.domain.dto.CarResponseDto;
 import de.aittr.car_rent.domain.entity.Car;
 import de.aittr.car_rent.domain.entity.CarStatus;
+import de.aittr.car_rent.domain.entity.CarType;
 import de.aittr.car_rent.exception_handling.exceptions.CarNotFoundException;
 import de.aittr.car_rent.repository.BookingRepository;
 import de.aittr.car_rent.repository.CarRepository;
@@ -16,6 +17,7 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
@@ -183,16 +185,19 @@ public class CarServiceImpl implements CarService {
     public List<CarResponseDto> filterAvailableCars(
             LocalDateTime startDateTime,
             LocalDateTime endDateTime,
-            String brand,
-            String fuelType,
-            String transmissionType,
+            List<String> brand,
+            List<String> fuel,
+            List<String> transmissionType,
+            List<String> type,
             BigDecimal minPrice,
-            BigDecimal maxPrice){
+            BigDecimal maxPrice) {
+
         return getAllAvailableCarsByDates(startDateTime, endDateTime)
                 .stream()
-                .filter(car -> brand == null || car.brand().equalsIgnoreCase(brand.trim()))
-                .filter(car -> fuelType == null || car.fuelType().name().equalsIgnoreCase(fuelType.trim()))
-                .filter(car -> transmissionType == null || car.transmissionType().name().equalsIgnoreCase(transmissionType.trim()))
+                .filter(car -> brand == null || brand.isEmpty() || brand.stream().anyMatch(item -> car.brand().equalsIgnoreCase(item.trim())))
+                .filter(car -> type == null || type.isEmpty() || type.stream().anyMatch(item -> car.type().name().equalsIgnoreCase(item.trim())))
+                .filter(car -> transmissionType == null || transmissionType.isEmpty() || transmissionType.stream().anyMatch(item -> car.transmissionType().name().equalsIgnoreCase(item.trim())))
+                .filter(car -> fuel == null || fuel.isEmpty() || fuel.stream().anyMatch(item -> car.fuelType().name().equalsIgnoreCase(item.trim())))
                 .filter(car -> minPrice == null || car.dayRentalPrice().compareTo(minPrice) >= 0)
                 .filter(car -> maxPrice == null || car.dayRentalPrice().compareTo(maxPrice) <= 0)
                 .collect(Collectors.toList());
@@ -204,6 +209,14 @@ public class CarServiceImpl implements CarService {
                 .stream()
                 .filter(Car::isActive)
                 .map(Car::getBrand)
+                .distinct()
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<String> getAllCarTypes() {
+        return Arrays.stream(CarType.values())
+                .map(Enum::name)
                 .distinct()
                 .collect(Collectors.toList());
     }

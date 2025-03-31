@@ -123,11 +123,14 @@ public interface CarService {
     List<CarResponseDto> filterAvailableCars(
             LocalDateTime startDateTime,
             LocalDateTime endDateTime,
-            String brand,
-            String fuelType,
-            String transmissionType,
+            List<String> brand,
+            List<String> fuel,
+            List<String> transmissionType,
+            List<String> type,
             BigDecimal minPrice,
             BigDecimal maxPrice);
 
     List<String> getAllAvailableBrands();
+
+    List<String> getAllCarTypes();
 }
