@@ -146,7 +146,7 @@ public class CarController {
         carService.deleteCarById(id);
     }
 
-//    GET-> localhost:8080/api/cars/filter?startDateTime=2024-03-20T10:00:00&endDateTime=2024-03-25T10:00:00&minPrice=50&maxPrice=200
+//    GET-> localhost:5195/api/cars/filter?startDateTime=2025-03-30T16%3A43&endDateTime=2025-04-03T16%3A43&minPrice=20&maxPrice=100&fuel=petrol&type=sedan&brand=toyota
     @GetMapping("/filter")
     @Operation(
             summary = "Filter available cars",
